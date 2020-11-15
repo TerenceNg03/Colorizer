@@ -13,5 +13,7 @@ def visulize(n, dataset, transform = None, cmap = 'viridis', datapos = 0, title 
             if transform:
                 img = transform(img)
             img = img.permute((1,2,0)).detach()
+            if img.shape[2] == 1:
+                img = img.reshape((img.shape[0],img.shape[1]))
             imgs[i,j].imshow(img, aspect='auto', cmap = cmap)
             imgs[i,j].axis('off')
