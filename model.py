@@ -11,10 +11,8 @@ class Down(nn.Module):
         self.layer2 = nn.Sequential(nn.Conv2d((inc+out)//2, out, 3, padding = 1), nn.ReLU())
         self.pool = pool
     def forward(self, x):
-#         d = x
         x = self.layer1(x)
         x = self.layer2(x)
-#         x += torch.cat([d for _ in range(self.out//self.inc)], dim = 1)
         x = F.max_pool2d(x, self.pool)
         return x
     
@@ -41,19 +39,25 @@ class Colorizer(nn.Module):
         self.d3 = Down(64,128)
         self.d4 = Down(128,256)
         self.u1 = Up(256,128)
-        self.u2 = Up(128,64)
-        self.u3 = Up(64,8)
-        self.u4 = Up(8,3, relu = False)
+        self.u2 = Up(256,64)
+        self.u3 = Up(128,8)
+        self.u4 = Up(16,3, relu = False)
         
     def forward(self, x):
         x = self.d1(x)
+        out1 = x
         x = self.d2(x)
+        out2 = x
         x = self.d3(x)
+        out3 = x
         x = self.d4(x)
         
         x = self.u1(x)
+        x = torch.cat([x,out3], dim = 1)
         x = self.u2(x)
+        x = torch.cat([x,out2], dim = 1)
         x = self.u3(x)
+        x = torch.cat([x,out1], dim = 1)
         x = self.u4(x)
         
         x = torch.sigmoid(x)
