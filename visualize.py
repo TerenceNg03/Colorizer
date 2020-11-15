@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import torch
 
-def Datavisulize(n, dataset, transform = None, cmap = 'viridis', datapos = 0, title = None):
+def Datavisualize(n, dataset, transform = None, cmap = 'viridis', datapos = 0, title = None):
     f, imgs = plt.subplots(n,n)
     if title:
         f.suptitle(title)
