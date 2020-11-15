@@ -17,8 +17,11 @@ class Trainer:
         self.T = torchvision.transforms.Compose([torchvision.transforms.ToPILImage(),torchvision.transforms.Grayscale(),torchvision.transforms.ToTensor()])
 
         if self.cuda:
+            print('CUDA is enabled')
             self.model_G = self.model_G.cuda()
             self.model_D = self.model_D.cuda()
+        else:
+            print('Warning : GPU train is not availiable')
             
     def pretrain(self, epochs, timeout = -1):
         for epoch in range(epochs):
