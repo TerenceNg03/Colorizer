@@ -3,9 +3,9 @@ import torchvision
 from PIL import Image
 import numpy as np
 
-class STL10_Relable(dset.STL10):
-    def __init__(self):
-        super().__init__(root = './', split = 'unlabeled', download = True)
+class STL10_Relabel(dset.STL10):
+    def __init__(self, split = 'unlabeled'):
+        super().__init__(root = './', split = split, download = True)
         self.Timg = torchvision.transforms.Compose([torchvision.transforms.Grayscale(),torchvision.transforms.ToTensor()])
         self.Ttar = torchvision.transforms.ToTensor()
     def __getitem__(self, index: int):
