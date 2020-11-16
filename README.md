@@ -2,10 +2,10 @@
 
 A GAN based grayscale image colorizing neural network.  
 
-#To Do List
+### To Do List
 
-*finish data loading and visualzie related code
+- [x] finish data loading and visualzie related code
 
-*optimize model architecture  
+- [ ] optimize model architecture  
 
-*finish GAN trainer
+- [ ] finish GAN trainer

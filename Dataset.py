@@ -23,3 +23,12 @@ class STL10_Relabel(dset.STL10):
         img = self.Timg(img)
 
         return img, target
+
+class RandomSet(STL10_Relabel):
+    def __init__(self, split = 'test'):
+        super().__init__(split)
+        
+    def __getitem__(self, index):
+        #index will be ignored
+        item = super().__getitem__(np.random.randint(self.__len__()))
+        return item
