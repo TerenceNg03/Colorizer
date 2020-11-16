@@ -19,6 +19,7 @@ def Datavisualize(n, dataset, transform = None, cmap = 'viridis', datapos = 0, t
             imgs[i,j].axis('off')
             
 def compare(n, dataset, model):
+    model.eval()
     f, imgs = plt.subplots(n,3)
     f.set_figheight(8)
     f.set_figwidth(8)
