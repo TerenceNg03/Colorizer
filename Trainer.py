@@ -24,6 +24,13 @@ class Trainer:
             print('Warning : GPU train is not availiable')
             
     def pretrain(self, epochs, timeout = -1):
+        """
+        timeout : in seconds, control train time. Very useful if using cpu to train
+        epochs : how many turns train over whole dataset
+        """
+         if self.cuda:
+            self.model_G = self.model_G.cuda()
+            self.model_D = self.model_D.cuda()
         for epoch in range(epochs):
             time_start = time.time()
             total = self.dataset.__len__()
@@ -49,24 +56,56 @@ class Trainer:
             if not timedout:
                 print('(pretrain Epcho %d / %d) Done in time %.3f s'%(epoch+1, epochs, time_end-time_start)+' '*40)
             
-    def train(self, epochs, timeout = -1):
-        #timeout : control train time
+    def train(self, epochs, timeout = -1, steps = 10):
+        """
+        steps : how many times train models in each loop
+        """
+         if self.cuda:
+            self.model_G = self.model_G.cuda()
+            self.model_D = self.model_D.cuda()
         
         self.model_D.train()
         self.model_G.train()
         for epoch in range(epochs):
             time_start = time.time()
-            total = len(trainset)
-            i = 0
-            for data in enumerate(self.dataset):  
-                X, _ = data 
-                self._train(X)
-                i += 1
-                print('(Epcho %d / %d) Training process : %.3f%%'%(epoch+1, epochs, 100*i/total),end='\r')
+            iter = self.dataset.__iter__()
+            total = len(self.dataset)//steps
+            for i in range(total):
+                fakes = []
+                reals = []
+                ######Train Generator#######
+                for k in range(steps):
+                    data = iter.next()
+                    gray, orig = data
+                    if self.cuda:
+                        gray = gray.cuda()
+                        orig = orig.cuda()
+                    reals.append(orig)
+                    
+                    self.optimizer_G.zero_grad()
+                    output = self.model_G(gray)
+                    fakes.append(output)
+                    output = self.model_D(output)
+                    loss = F.nll_loss(output, torch.ones((gray.shape[0],), dtype = torch.long))
+                    loss.backward()
+                    self.optimizer_G.step()
+                
+                #######Train Discriminator#####
+                for k in range(steps):
+                    self.optimizer_D.zero_grad()
+                    output = self.model_D(fakes[i])
+                    loss = F.nll_loss(output, torch.zeros((1,gray.shape[0]), dtype = torch.long))
+                    loss.backward()
+                    output = self.model_D(reals[i])
+                    loss = F.nll_loss(output, torch.ones((1,gray.shape[0]), dtype = torch.long))
+                    loss.backward()
+                    self.optimizer_D.step()        
+        
+                print('(Epcho %d / %d) Training process : %.3f%%'%(epoch+1, epochs, 100*i/steps),end='\r')
                 if timeout>0 and (time.time()-time_start>=timeout):
                     break
             time_end = time.time()
             print('(Epcho %d / %d) Done in time %.3f s'%(epoch+1, epochs, time_end-time_start)+' '*40, end = '\r')
 
-        
+
         
