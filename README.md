@@ -6,6 +6,12 @@ A GAN based grayscale image colorizing neural network.
 
 - [x] finish data loading and visualzie related code
 
-- [ ] optimize model architecture  
+- [x] optimize model architecture  
 
-- [ ] finish GAN trainer
+- [x] finish GAN trainer
+
+- [ ] test and decide if reconstruct model is necessary
+
+- [ ] model save and reload 
+
+- [ ] add lsz's graphic app
