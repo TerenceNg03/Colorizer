@@ -55,10 +55,14 @@ class Trainer:
             if not timedout:
                 print('(pretrain Epcho %d / %d) Done in time %.3f s'%(epoch+1, epochs, time_end-time_start)+' '*40)
             
-    def train(self, epochs, timeout = -1, steps = 10):
+    def train(self, epochs, timeout = -1, step = [50,1]):
         """
         steps : how many times train models in each loop
         """
+        G_loss = []
+        D_loss_real = []
+        D_loss_fake = []
+        steps = max(step)
         if self.cuda:
             self.model_G = self.model_G.cuda()
             self.model_D = self.model_D.cuda()
@@ -76,7 +80,7 @@ class Trainer:
                 ######Train Generator#######
                 self.model_D.eval()
                 self.model_G.train()
-                for k in range(steps):
+                for k in range(step[0]):
                     data = iter.next()
                     gray, orig = data
                     if self.cuda:
@@ -88,29 +92,32 @@ class Trainer:
                     output = self.model_G(gray)
                     fakes.append(output.detach())
                     output = self.model_D(output)
-                    label = torch.ones((gray.shape[0],), dtype = torch.long)
+                    label = torch.zeros((gray.shape[0],), dtype = torch.long)
                     if self.cuda:
                         label = label.cuda()
                     loss = F.nll_loss(output, label)
+                    G_loss.append(torch.mean(loss))
                     loss.backward()
                     self.optimizer_G.step()
                 
                 #######Train Discriminator#####
                 self.model_G.eval()
                 self.model_D.train()
-                for k in range(steps):
+                for k in range(step[1]):
                     self.optimizer_D.zero_grad()
                     output = self.model_D(fakes[k])
                     label = torch.zeros((gray.shape[0],), dtype = torch.long)
                     if self.cuda:
                         label = label.cuda()
                     loss = F.nll_loss(output, label)
+                    D_loss_fake.append(torch.mean(loss))
                     loss.backward()
                     output = self.model_D(reals[k])
                     label = torch.ones((gray.shape[0],), dtype = torch.long)
                     if self.cuda:
                         label = label.cuda()
                     loss = F.nll_loss(output, label)
+                    D_loss_real.append(torch.mean(loss))
                     loss.backward()
                     self.optimizer_D.step()        
         
@@ -122,5 +129,5 @@ class Trainer:
                     break
             if not timedout:
                 print('(train Epcho %d / %d) Done in time %.3f s'%(epoch+1, epochs, time_end-time_start)+' '*40)
-
+            return G_loss, D_loss_real, D_loss_fake
         
