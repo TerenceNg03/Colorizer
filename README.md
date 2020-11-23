@@ -10,8 +10,12 @@ A GAN based grayscale image colorizing neural network.
 
 - [x] finish GAN trainer
 
-- [ ] test and decide if reconstruct model is necessary
+- [x] test and decide if reconstruct model is necessary
 
+### GAN Branch
+- [ ] rewrite GAN 
+
+### APP Branch
 - [ ] model save and reload 
 
 - [ ] add lsz's graphic app
