@@ -139,5 +139,10 @@ stl10_binary.tar.gz
 .virtual_documents/
 
 #app data
-app/example/
-app/pretrain/
+#app/example/
+#app/pretrain/
+
+#Train file
+./*.py
+./*.md
+./*.ipynb
