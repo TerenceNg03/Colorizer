@@ -16,6 +16,6 @@ A GAN based grayscale image colorizing neural network.
 - [ ] rewrite GAN 
 
 ### APP Branch
-- [ ] model save and reload 
+- [x] model save and reload 
 
-- [ ] add lsz's graphic app
+- [x] add lsz's graphic app
