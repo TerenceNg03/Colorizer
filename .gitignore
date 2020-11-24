@@ -137,3 +137,7 @@ stl10_binary.tar.gz
 
 #Jupyter
 .virtual_documents/
+
+#app data
+app/example/
+app/pretrain/
