@@ -1,6 +1,6 @@
-# GAN-Colorize
+# Colorizer
 
-A GAN based grayscale image colorizing neural network.  
+A CNN based grayscale image colorizing neural network.  
 
 ### To Do List
 
@@ -13,7 +13,7 @@ A GAN based grayscale image colorizing neural network.
 - [x] test and decide if reconstruct model is necessary
 
 ### GAN Branch
-- [ ] rewrite GAN 
+- [ ] Fix GAN 
 
 ### APP Branch
 - [x] model save and reload 
